@@ -1,0 +1,34 @@
+# Import necessary modules for making API requests and parsing JSON data
+import urllib.request
+import json
+import random
+
+# Ask the user for their favorite game genre and preferred minimum rating
+print("What is your favorite game genre?")
+genre = input()
+print("What is your preferred minimum rating?")
+rating = input()
+
+# Set the default minimum rating to 0 if the user did not provide one
+if not rating:
+    rating = 0
+else:
+    rating = int(rating)
+
+# Build the URL for the API request using the user's input
+url = f"https://api.rawg.io/api/games?key=YOUR_API_KEY&genres={genre}&metacritic={rating},100&ordering=-rating&page_size=50"
+
+# Make the API request and load the JSON data into a Python dictionary
+response = urllib.request.urlopen(url)
+data = json.loads(response.read())
+
+# If no games were found, print a message to the user and exit the program
+if not data["results"]:
+    print("Sorry, no games matching your preferences were found.")
+    exit()
+
+# If games were found, choose a random one and print its information to the user
+game = random.choice(data["results"])
+print(f"Here's a game you might like: {game['name']} ({genre})")
+print(f"Rating: {game['rating']}")
+print(f"Release date: {game['released']}")
